@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart Pattern Intelligence — NSE | ET Markets Hackathon</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">CΨ</div>
+      <div>
+        <div class="logo-text">Chart Pattern Intelligence</div>
+        <div class="logo-sub">NSE · AI-Powered · ET Markets</div>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-wrap">
+        <input type="text" id="searchInput" class="search-box" placeholder="Search NSE symbol… e.g. RELIANCE, TCS" autocomplete="off"/>
+        <div class="search-results" id="searchResults"></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-badge"><div class="live-dot"></div> <span id="mktStatus">LIVE</span></div>
+      <div id="dataSrcBadge" style="font-size:10px;color:#6a6a5a;font-family:monospace;">Loading…</div>
+      <div class="nse-time" id="mktTime">—</div>
+    </div>
+  </header>
+
+  <!-- MARKET TICKER
+  <div class="ticker-bar" id="tickerBar">
+    <div class="ticker-track" id="tickerTrack">Loading market data…</div>
+  </div> -->
+
+  <!-- MAIN LAYOUT -->
+  <div class="main">
+    <!-- LEFT: SCANNER -->
+    <aside class="sidebar-left">
+      <div class="sidebar-title">Pattern Scanner <span id="scanCount" class="scan-count">—</span></div>
+      <div class="scanner-filters">
+        <div class="filter-group">
+          <div class="filter-label">Pattern Type</div>
+          <div class="chip-group" id="patFilter">
+            <span class="chip active" data-val="all">All</span>
+            <span class="chip" data-val="bullish">Bullish</span>
+            <span class="chip" data-val="bearish">Bearish</span>
+            <span class="chip" data-val="breakout">Breakout</span>
+            <span class="chip" data-val="reversal">Reversal</span>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Min Confidence</div>
+          <div class="chip-group" id="confFilter">
+            <span class="chip active" data-val="70">70%+</span>
+            <span class="chip" data-val="80">80%+</span>
+            <span class="chip" data-val="90">90%+</span>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Sector</div>
+          <div class="chip-group" id="secFilter">
+            <span class="chip active" data-val="all">All</span>
+            <span class="chip" data-val="IT">IT</span>
+            <span class="chip" data-val="Banking">Bank</span>
+            <span class="chip" data-val="Pharma">Pharma</span>
+            <span class="chip" data-val="Auto">Auto</span>
+            <span class="chip" data-val="Energy">Energy</span>
+            <span class="chip" data-val="FMCG">FMCG</span>
+          </div>
+        </div>
+      </div>
+      <div class="stock-list" id="stockList">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <div>Scanning NSE universe…</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER: CHART -->
+    <main class="chart-area">
+      <div class="chart-header">
+        <div class="chart-stock-meta">
+          <div class="chart-symbol-row">
+            <span class="chart-symbol" id="chartSymbol">—</span>
+            <span class="chart-full-name" id="chartName">Select a stock</span>
+            <span class="chart-sector-badge" id="chartSector"></span>
+          </div>
+          <div class="chart-price-row">
+            <span class="chart-price" id="chartPrice">—</span>
+            <span class="chart-change" id="chartChg"></span>
+            <span class="chart-ohlc" id="chartOHLC"></span>
+          </div>
+        </div>
+        <div class="chart-meta-right">
+          <div class="meta-item"><span class="meta-lbl">52W High</span><span class="meta-val" id="high52">—</span></div>
+          <div class="meta-item"><span class="meta-lbl">52W Low</span><span class="meta-val" id="low52">—</span></div>
+          <div class="meta-item"><span class="meta-lbl">Mkt Cap</span><span class="meta-val" id="mktCap">—</span></div>
+          <div class="meta-item"><span class="meta-lbl">Volume</span><span class="meta-val" id="volume">—</span></div>
+        </div>
+      </div>
+
+      <div class="timeframe-bar">
+        <div class="tf-group" id="tfGroup">
+          <button class="tf-btn" data-tf="1d">1D</button>
+          <button class="tf-btn" data-tf="5d">5D</button>
+          <button class="tf-btn active" data-tf="1mo">1M</button>
+          <button class="tf-btn" data-tf="3mo">3M</button>
+          <button class="tf-btn" data-tf="6mo">6M</button>
+          <button class="tf-btn" data-tf="1y">1Y</button>
+        </div>
+        <div class="ind-group">
+          <button class="ind-btn active" data-ind="BB" title="Bollinger Bands">BB</button>
+          <button class="ind-btn active" data-ind="EMA" title="Exponential Moving Averages">EMA</button>
+          <button class="ind-btn active" data-ind="VOL" title="Volume Bars">VOL</button>
+          <button class="ind-btn active" data-ind="RSI" title="RSI">RSI</button>
+        </div>
+      </div>
+
+      <div class="chart-canvas-area" id="chartCanvasArea">
+        <div class="chart-placeholder" id="chartPlaceholder">
+          <div class="placeholder-icon">📊</div>
+          <div class="placeholder-text">Select a stock from the scanner to view chart</div>
+        </div>
+        <canvas id="priceChart" style="display:none"></canvas>
+        <canvas id="volumeChart" style="display:none"></canvas>
+        <canvas id="rsiChart" style="display:none"></canvas>
+        <div class="pattern-overlay" id="patternOverlay" style="display:none">
+          <div class="pattern-name" id="overlayPatName">—</div>
+          <div class="pattern-type-badge" id="overlayPatType"></div>
+          <div class="pattern-desc" id="overlayPatDesc">—</div>
+          <div class="pattern-confidence">
+            <span class="conf-label">CONFIDENCE</span>
+            <div class="conf-bar-wrap"><div class="conf-bar" id="overlayConfBar"></div></div>
+            <span class="conf-val" id="overlayConfVal">—</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT: SIGNAL PANEL -->
+    <aside class="sidebar-right" id="signalPanel">
+      <div class="signal-empty" id="signalEmpty">
+        <div style="font-size:32px;margin-bottom:12px;">🎯</div>
+        <div style="font-size:13px;color:var(--text-muted);">Select a stock to see AI signal analysis</div>
+      </div>
+      <div id="signalContent" style="display:none">
+        <!-- AI Verdict -->
+        <div class="signal-section">
+          <div class="sig-title">AI Signal</div>
+          <div class="verdict-box" id="verdictBox">
+            <div class="verdict-label">PATTERN VERDICT</div>
+            <div class="verdict-signal" id="verdictSignal">—</div>
+            <div class="verdict-desc" id="verdictDesc">—</div>
+          </div>
+          <div class="plain-eng-label">Plain English Explanation</div>
+          <div class="plain-eng" id="plainEng">—</div>
+        </div>
+
+        <!-- Historical Success Rate -->
+        <div class="signal-section">
+          <div class="sig-title">Historical Success Rate</div>
+          <div class="hist-grid">
+            <div class="hist-card"><div class="hist-num" id="hWinRate">—</div><div class="hist-lbl">Win Rate</div></div>
+            <div class="hist-card"><div class="hist-num" id="hPatCount">—</div><div class="hist-lbl">Patterns Found</div></div>
+            <div class="hist-card"><div class="hist-num" id="hAvgGain">—</div><div class="hist-lbl">Avg Gain</div></div>
+            <div class="hist-card"><div class="hist-num" id="hAvgDays">—</div><div class="hist-lbl">Avg Days</div></div>
+          </div>
+          <div class="hist-list" id="histList"></div>
+        </div>
+
+        <!-- Price Targets -->
+        <div class="signal-section">
+          <div class="sig-title">Price Targets</div>
+          <div id="priceTargets"></div>
+        </div>
+
+        <!-- Technical Indicators -->
+        <div class="signal-section">
+          <div class="sig-title">Technical Indicators</div>
+          <div id="techIndicators"></div>
+        </div>
+
+        <!-- Alert Button -->
+        <div class="signal-section">
+          <button class="alert-btn" id="alertBtn">
+            🔔 Set Breakout Alert
+          </button>
+          <div class="alert-feedback" id="alertFeedback" style="display:none">
+            ✅ Alert set! You'll be notified when breakout triggers.
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- BOTTOM ALERTS BAR -->
+  <div class="bottom-bar" id="bottomBar">
+    <div class="bottom-label">LIVE ALERTS</div>
+    <div class="alerts-scroll" id="alertsScroll"></div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<!-- Main App JS -->
+<script src="src/data/stocks.js"></script>
+<script src="src/utils/patterns.js"></script>
+<script src="src/utils/technicals.js"></script>
+<script src="src/utils/api.js"></script>
+<script src="src/components/chart.js"></script>
+<script src="src/components/scanner.js"></script>
+<script src="src/components/signals.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>
