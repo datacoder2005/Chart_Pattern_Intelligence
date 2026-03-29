@@ -1,11 +1,11 @@
-# Chart Pattern Intelligence 📈
+# Chart Pattern Intelligence 
 ### AI for the Indian Investor
 
 > Real-time technical chart pattern detection across the full NSE universe — with plain-English explanations and historical back-tested success rates, stock-specific.
 
 ---
 
-## 🚀 Live Demo
+##  Live Demo
 
 Open `index.html` in your browser. No server required — all data fetched live from Yahoo Finance API.
 
@@ -13,7 +13,7 @@ Open `index.html` in your browser. No server required — all data fetched live 
 
 ---
 
-## 🧠 What It Does
+##  What It Does
 
 **Chart Pattern Intelligence** automatically scans 28+ NSE stocks, detects 8 major chart patterns in real time, and translates them into plain-English buy/sell signals with:
 
@@ -52,7 +52,7 @@ chart-pattern-intelligence/
 
 ---
 
-## 🏃 How to Run
+##  How to Run
 
 ### Option 1: Direct (Recommended for Demo)
 ```bash
@@ -73,7 +73,7 @@ npx serve .
 
 ---
 
-## 🔌 Data Source
+##  Data Source
 
 All price data comes from **Yahoo Finance API** (free, no authentication required):
 - **Real-time quotes**: `query1.finance.yahoo.com/v7/finance/quote`
@@ -84,7 +84,7 @@ All price data comes from **Yahoo Finance API** (free, no authentication require
 
 ---
 
-## 🔍 Pattern Detection Algorithms
+##  Pattern Detection Algorithms
 
 Each detector works purely on OHLCV data:
 
@@ -102,7 +102,7 @@ Each detector works purely on OHLCV data:
 
 ---
 
-## 📊 Technical Indicators
+##  Technical Indicators
 
 Computed from scratch (no external library):
 
@@ -118,7 +118,7 @@ Computed from scratch (no external library):
 
 ---
 
-## ⚡ Key Features
+##  Key Features
 
 ### Real-Time Data
 - Quotes refresh every 60 seconds automatically
