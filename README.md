@@ -1,5 +1,5 @@
 # Chart Pattern Intelligence 📈
-### ET Markets Hackathon 2024 — Problem Statement 6: AI for the Indian Investor
+### AI for the Indian Investor
 
 > Real-time technical chart pattern detection across the full NSE universe — with plain-English explanations and historical back-tested success rates, stock-specific.
 
